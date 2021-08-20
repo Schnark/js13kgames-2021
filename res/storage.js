@@ -4,6 +4,9 @@ storage =
 "use strict";
 
 //FIXME exchange sessionStorage for localStorage once things are ready for this
+if (false) {//to make sure the linter complains about the above FIXME
+	alert();
+}
 
 var data = {
 	record: -1,
