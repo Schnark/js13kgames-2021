@@ -9,8 +9,12 @@ if (false) {//to make sure the linter complains about the above FIXME
 }
 
 var data = {
-	record: -1,
-	sound: true
+	record0: [-1, '—'],
+	record1: [-1, '—'],
+	record2: [-1, '—'],
+	gold: 0,
+	sound: true,
+	fullscreen: false //TODO
 }, storageKey = 'schnark-js13k-2021';
 
 try {

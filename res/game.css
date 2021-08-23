@@ -1,9 +1,46 @@
 html {
 	background: #000;
 	color: #fff;
+	font-family: sans-serif;
 }
 
 #canvas {
 	display: block;
 	margin: auto;
+}
+
+button canvas {
+	padding: 1.5em;
+	background: radial-gradient(circle at center, black, black 50%, transparent);
+}
+
+:enabled .d,
+:disabled .e {
+	display: none;
+}
+
+.large-q {
+	font-weight: bold;
+	font-size: 57px;
+}
+
+input[type="checkbox"],
+input[type="checkbox"]:checked ~ .off,
+input[type="checkbox"]:not(:checked) ~ .on {
+	display: none;
+}
+
+button:enabled,
+label {
+	cursor: pointer;
+}
+
+#overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.8);
+	text-align: center;
 }

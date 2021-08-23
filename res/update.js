@@ -1,12 +1,35 @@
 /*global update: true*/
 /*global WIDTH, HEIGHT, SHIPSIZE, PLANET_R,
-	circleSpeed, moveSpeed, planets,
+	circleSpeed, moveSpeed, planets: true,
 	playerX: true, playerY: true, playerAngle: true,
 	playerPlanet: true, circleDir: true,
-	startY: true, lastPlanet: true*/
+	startY: true, lastPlanet: true, gold: true*/
 update =
 (function () {
 "use strict";
+
+function init () {
+	planets = [{
+		x: 210, //WIDTH / 2
+		y: 75, //25 + SHIPSIZE + PLANET_R
+		r: 40, //PLANET_R
+		t: 0
+	}, {
+		x: 150,
+		y: 210,
+		r: 40,
+		t: 0
+	}];
+	playerX = 175; //planets[0].x - planets[0].r
+	playerY = 60; //planets[0].y
+	playerAngle = 0.5 * Math.PI;
+	playerPlanet = 0;
+	circleDir = -1;
+	lastPlanet = 0;
+	startY = 0;
+
+	addPlanets();
+}
 
 function addPlanets () {
 	while (planets[planets.length - 1].y < startY + 2 * HEIGHT) {
@@ -14,13 +37,24 @@ function addPlanets () {
 	}
 }
 
+function getRandomType (probs) {
+	var r = Math.random(), i;
+	for (i = 0; i < probs.length; i++) {
+		if (r <= probs[i]) {
+			return i;
+		}
+		r -= probs[i];
+	}
+	return 0;
+}
+
 function addPlanet () {
 	var last = planets[planets.length - 1];
 	planets.push({
 		x: 2 * SHIPSIZE + PLANET_R + Math.round((WIDTH - 4 * SHIPSIZE - 2 * PLANET_R) * Math.random()),
-		y: last.y + Math.round(HEIGHT / 4 * Math.random() + 80),
+		y: last.y + 2 * SHIPSIZE + 2 * PLANET_R + Math.round(HEIGHT / 4 * Math.random()),
 		r: Math.max(Math.min(last.r, PLANET_R - Math.round(planets.length * Math.random() / 5)), 5),
-		t: Math.random() < 0.2 ? 2 : Math.random() < 0.2 ? 1 : 0
+		t: getRandomType([0.4, 0.25, 0.2, 0.05, 0.1])
 	});
 }
 
@@ -34,7 +68,7 @@ function update (dt) {
 			startY += dy / 3;
 		}
 		if (playerX < 0 || playerX > WIDTH || playerY < startY || playerY > startY + HEIGHT) {
-			return [planets[lastPlanet].y, Math.round((planets[lastPlanet].y - planets[0].y) / 10) / 100];
+			return [planets[lastPlanet].y, (Math.round((planets[lastPlanet].y - planets[0].y) / 10) / 100) + 'ly'];
 		}
 		for (i = lastPlanet + 1; i < planets.length; i++) {
 			dy = playerY - planets[i].y;
@@ -49,13 +83,18 @@ function update (dt) {
 				circleDir = (playerAngle + Math.PI - angle) % (2 * Math.PI) > Math.PI ? 1 : -1;
 				playerAngle = (angle + 0.5 * circleDir * Math.PI + 2 * Math.PI) % (2 * Math.PI);
 				addPlanets();
+				if (planets[i].t === 3) {
+					gold += 100;
+				} else if (planets[i].t === 4) {
+					gold += 50;
+				}
 				break;
 			}
 		}
 	} else {
 		if (planets[playerPlanet].t === 2) {
 			factor = planets[playerPlanet].factor || 1;
-			planets[playerPlanet].factor = factor + dt / 1000;
+			planets[playerPlanet].factor = factor + dt / 1500;
 		} else {
 			factor = 1;
 		}
@@ -70,7 +109,7 @@ function update (dt) {
 	}
 }
 
-addPlanets();
+update.init = init;
 
 return update;
 })();

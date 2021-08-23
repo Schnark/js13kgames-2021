@@ -1,60 +1,60 @@
-/*global storage, draw, update*/
-/*global playerPlanet: true, record: true*/
+/*global storage, play*/
 (function () {
 "use strict";
 
-var rAF, time;
+var fullscreen, sound;
 
-function showResult (rawY, displayY) {
-	if (rawY > record) {
-		storage.set('record', rawY);
-	}
-	alert('You are lost in space. ' +
-		'The farthest planet you reached was ' + displayY + 'ly away.' +
-		(rawY > record ? '\nThat’s a new record!' : '') +
-		'\nReload the page for a new game.');
+function start (type) {
+	document.getElementById('menu').hidden = true;
+	document.getElementById('game').hidden = false;
+	document.getElementById('overlay').hidden = true;
+	play(type);
 }
 
-function loop (t) {
-	var dt, end;
-	draw(t);
-	if (time) {
-		dt = t - time;
-		while (dt > 10 && !end) {
-			end = update(10); //10 * moveSpeed === 1
-			dt -= 10;
-		}
-		if (!end) {
-			end = update(dt);
-		}
-	}
-	time = t;
-	if (!end) {
-		rAF(loop);
-	} else {
-		showResult(end[0], end[1]);
-	}
-}
+document.getElementById('record0').textContent = storage.get('record0')[1];
+document.getElementById('record1').textContent = storage.get('record1')[1];
+document.getElementById('record2').textContent = storage.get('record2')[1];
 
-record = storage.get('record');
-
-rAF = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
-	window.webkitRequestAnimationFrame || window.oRequestAnimationFrame;
-rAF(loop);
-
-window.addEventListener('mousedown', function () {
-	playerPlanet = -1;
+document.getElementById('button0').addEventListener('click', function () {
+	start(0);
+});
+document.getElementById('button1').addEventListener('click', function () {
+	start(1);
+});
+document.getElementById('button2').addEventListener('click', function () {
+	start(2);
+});
+document.getElementById('button-retry').addEventListener('click', function () {
+	start(-1);
+});
+document.getElementById('button-menu').addEventListener('click', function () {
+	document.getElementById('menu').hidden = false;
+	document.getElementById('game').hidden = true;
 });
 
-window.addEventListener('touchstart', function () {
-	playerPlanet = -1;
+fullscreen = document.getElementById('fullscreen');
+sound = document.getElementById('sound');
+
+fullscreen.checked = storage.get('fullscreen');
+fullscreen.parentElement.addEventListener('mousedown', function (e) {
+	e.stopPropagation();
+});
+fullscreen.parentElement.addEventListener('touchstart', function (e) {
+	e.stopPropagation();
+});
+fullscreen.addEventListener('change', function () {
+	storage.set('fullscreen', fullscreen.checked);
 });
 
-window.addEventListener('keydown', function (e) {
-	if (e.key === ' ' || e.key === 'Spacebar' || e.keyCode === 32) {
-		playerPlanet = -1;
-		e.preventDefault();
-	}
+sound.checked = storage.get('sound');
+sound.parentElement.addEventListener('mousedown', function (e) {
+	e.stopPropagation();
+});
+sound.parentElement.addEventListener('touchstart', function (e) {
+	e.stopPropagation();
+});
+sound.addEventListener('change', function () {
+	storage.set('sound', sound.checked);
 });
 
 })();

@@ -1,5 +1,5 @@
-JS = res/global.js res/storage.js res/draw.js res/update.js res/game.js
-GLOBAL = storage, draw, update
+JS = res/global.js res/storage.js res/draw.js res/update.js res/play.js res/game.js
+GLOBAL = storage, draw, update, play
 
 .PHONY: check
 check: min/game.zip
