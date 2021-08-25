@@ -4,6 +4,34 @@ html {
 	font-family: sans-serif;
 }
 
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+#menu {
+	padding: 1em;
+}
+
+#header {
+	position: relative;
+	margin: auto;
+}
+
+#header label {
+	position: absolute;
+	top: 0;
+}
+
+#header label:first-child {
+	left: 0;
+}
+
+#header label:last-child {
+	right: 0;
+}
+
 #canvas {
 	display: block;
 	margin: auto;
@@ -12,6 +40,29 @@ html {
 button canvas {
 	padding: 1.5em;
 	background: radial-gradient(circle at center, black, black 50%, transparent);
+	border-radius: 50%;
+}
+
+@keyframes wiggle {
+	0% {
+		transform: rotate(0deg);
+	}
+	25% {
+		transform: rotate(10deg);
+	}
+	50% {
+		transform: rotate(0deg);
+	}
+	75% {
+		transform: rotate(10deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
+}
+
+button:hover canvas {
+	animation: wiggle 0.7s;
 }
 
 :enabled .d,
@@ -22,6 +73,10 @@ button canvas {
 .large-q {
 	font-weight: bold;
 	font-size: 57px;
+}
+
+button:disabled {
+	color: #555;
 }
 
 input[type="checkbox"],

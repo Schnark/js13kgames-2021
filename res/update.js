@@ -54,7 +54,7 @@ function addPlanet () {
 		x: 2 * SHIPSIZE + PLANET_R + Math.round((WIDTH - 4 * SHIPSIZE - 2 * PLANET_R) * Math.random()),
 		y: last.y + 2 * SHIPSIZE + 2 * PLANET_R + Math.round(HEIGHT / 4 * Math.random()),
 		r: Math.max(Math.min(last.r, PLANET_R - Math.round(planets.length * Math.random() / 5)), 5),
-		t: getRandomType([0.4, 0.25, 0.2, 0.05, 0.1])
+		t: getRandomType([0.0, 0.25, 0.2, 0.05, 0.1, 0.1, 0.3])
 	});
 }
 
@@ -68,7 +68,15 @@ function update (dt) {
 			startY += dy / 3;
 		}
 		if (playerX < 0 || playerX > WIDTH || playerY < startY || playerY > startY + HEIGHT) {
-			return [planets[lastPlanet].y, (Math.round((planets[lastPlanet].y - planets[0].y) / 10) / 100) + 'ly'];
+			if (planets[lastPlanet].t === 6 && !planets[lastPlanet].saved) { //TODO there should be some animation
+				planets[lastPlanet].saved = true;
+				playerPlanet = lastPlanet;
+				angle = playerAngle - 0.5 * circleDir * Math.PI;
+				playerX = planets[playerPlanet].x + Math.cos(angle) * planets[playerPlanet].r;
+				playerY = planets[playerPlanet].y + Math.sin(angle) * planets[playerPlanet].r;
+			} else {
+				return [planets[lastPlanet].y, (Math.round((planets[lastPlanet].y - planets[0].y) / 10) / 100) + 'ly'];
+			}
 		}
 		for (i = lastPlanet + 1; i < planets.length; i++) {
 			dy = playerY - planets[i].y;
@@ -84,9 +92,9 @@ function update (dt) {
 				playerAngle = (angle + 0.5 * circleDir * Math.PI + 2 * Math.PI) % (2 * Math.PI);
 				addPlanets();
 				if (planets[i].t === 3) {
-					gold += 100;
+					gold += 10;
 				} else if (planets[i].t === 4) {
-					gold += 50;
+					gold += 5;
 				}
 				break;
 			}
