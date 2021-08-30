@@ -1,4 +1,5 @@
 /*global storage: true*/
+/*global WIDTH, HEIGHT*/
 storage =
 (function () {
 "use strict";
@@ -16,7 +17,7 @@ var data = {
 	record4: [-1, '—'],
 	gold: 0,
 	sound: true,
-	fullscreen: false //TODO
+	fullscreen: screen.width <= WIDTH || screen.height <= HEIGHT
 }, storageKey = 'schnark-js13k-2021';
 
 try {

@@ -1,5 +1,6 @@
 /*global draw: true*/
-/*global WIDTH, HEIGHT, SHIPSIZE, planets, playerX, playerY, playerAngle, playerPlanet, startY, lastPlanet, record*/
+/*global fullscreen*/
+/*global WIDTH, HEIGHT, SHIPSIZE, planets, playerX, playerY, playerAngle, startY, playerPlanet, lastPlanet, record*/
 draw =
 (function () {
 "use strict";
@@ -37,6 +38,8 @@ function initSpaceship0 (canvas, size, rot) {
 	if (size !== 10) {
 		ctx.scale(size / 10, size / 10);
 	}
+	ctx.fillStyle = 'silver';
+	ctx.fillRect(1, 8, 2, 4);
 	ctx.fillStyle = 'white';
 	ctx.strokeStyle = 'silver';
 	ctx.beginPath();
@@ -215,6 +218,7 @@ function initSpaceship4 (canvas, size, rot) {
 	ctx.fillRect(10, 9.5, 8, 1);
 }
 
+//NOTE all numbers here and following that _look_ random actually _are_ random, just to avoid any visible periods
 function drawBackground () {
 	var x, y, roundStartY = Math.round(startY);
 	ctx.fillStyle = 'black';
@@ -237,8 +241,8 @@ function drawBackground () {
 
 function willHitPlanet () {
 	var i, x, y, a;
-	for (i = playerPlanet + 1; i < planets.length; i++) {
-		if (planets[i].y - startY > HEIGHT) {
+	for (i = lastPlanet + 1; i < planets.length; i++) {
+		if (planets[i].y - startY > HEIGHT + 10) {
 			return false;
 		}
 		x = planets[i].x - playerX;
@@ -251,43 +255,94 @@ function willHitPlanet () {
 	return false;
 }
 
-function drawPlanet (x, y, r, type, time, currentPlanet) {
-	var c = Math.round(Math.sin(time / 1000 + x) * 48 + 200), i;
-	switch (type) { //TODO varying pattern instead of just varying color
+function drawCloud (x, y, r, t) {
+	var i, n = 7;
+	ctx.fillStyle = 'hsla(' +
+		(25 + 1.5 * Math.sin(t / 5100)) + ',' +
+		(90 + Math.sin(t / 520)) + '%,' +
+		(50 + 3 * Math.sin(t / 490)) + '%,' +
+		(0.98 + Math.sin(t / 480) / 100) + ')';
+	ctx.beginPath();
+	ctx.arc(x, y, r - 3, 0, 2 * Math.PI);
+	for (i = 0; i < n; i++) {
+		ctx.arc(
+			x + (r / 2 + 2 * Math.sin(t / 500 + i) + 2) * Math.cos(2 * Math.PI / n * i + Math.sin(t / 450 + i * 2) / 5),
+			y + (r / 2 + 2 * Math.sin(t / 600 + i * 3) + 2) * Math.sin(2 * Math.PI / n * i + Math.sin(t / 550 + i) / 5),
+			r / 2 + 2 * Math.sin(t / 400 + i * 4) + 2,
+			0, 2 * Math.PI
+		);
+	}
+	ctx.fill();
+}
+
+function drawPlanet (x, y, r, type, time, currentPlanet, dt) {
+	var i, c, lastY, h;
+	switch (type) {
 	case 0:
-		c = 'rgb(0,0,' + c + ')';
+		c = ['hsl(240,100%,50%)', 'hsl(230,100%,50%)'];
 		break;
 	case 1:
-		c = 'rgb(' + c + ',' + Math.round(c / 2) + ',0)';
+		c = ['hsl(25,100%,50%)', 'hsl(25,100%,60%)'];
 		break;
 	case 2:
-		c = 'rgb(' + c + ',0,0)';
+		c = ['hsl(0,100%,50%)', 'hsl(0,100%,60%)'];
 		break;
 	case 3:
-		c = 'rgb(' + c + ',' + Math.round(c / 3) + ',0)';
+		c = ['hsl(45,85%,40%)', 'hsl(50,90%,45%)'];
 		break;
 	case 4:
-		c = 'rgb(' + Math.round(c / 2) + ',' + Math.round(c / 2) + ',' + Math.round(c / 2) + ')';
+		c = ['#888', '#aaa'];
 		break;
 	case 5:
 		if (currentPlanet && willHitPlanet()) {
-			c = 'rgb(64,' + c + ',64)';
+			c = ['hsl(90,100%,50%)', 'hsl(90,90%,55%)'];
 		} else {
-			c = 'rgb(0,' + Math.round(c / 2) + ',0)';
+			c = ['hsl(90,100%,20%)', 'hsl(90,90%,25%)'];
 		}
 		break;
 	case 6:
-		c = 'rgb('  + Math.round(c / 2) + ',0,' + Math.round(c / 2) + ')';
+		c = ['hsl(300,80%,30%)', 'hsl(300,90%,35%)'];
 	}
-	drawCircle(x, HEIGHT - y + startY, r - SHIPSIZE - 5, c);
-	if (type === 1) {
+
+	ctx.beginPath();
+	ctx.arc(x, HEIGHT - y + startY, r - SHIPSIZE - 5, 0, 2 * Math.PI);
+	ctx.fillStyle = c[0];
+	ctx.fill();
+	ctx.save();
+	ctx.clip();
+	lastY = HEIGHT - y + startY - r + SHIPSIZE + 5;
+	i = 0;
+	while (lastY < HEIGHT - y + startY + r - SHIPSIZE - 5) {
+		h = (5 + 2 * Math.sin(5 * i + time / 2000 + x + type) - 2 * (i % 2)) * r / 30;
+		ctx.fillStyle = c[i % c.length];
+		ctx.fillRect(0, lastY, WIDTH, h);
+		lastY += h;
+		i += 1;
+	}
+	ctx.fillStyle = 'rgba(0,0,0,0.2)';
+	ctx.beginPath();
+	ctx.moveTo(x, HEIGHT - y + startY - r + SHIPSIZE + 5);
+	ctx.bezierCurveTo(
+		x + r / 2, HEIGHT - y + startY - r + SHIPSIZE + 5,
+		x + r / 2, HEIGHT - y + startY + r - SHIPSIZE - 5,
+		x, HEIGHT - y + startY + r - SHIPSIZE - 5);
+	ctx.lineTo(WIDTH, HEIGHT - y + startY + r - SHIPSIZE - 5);
+	ctx.lineTo(WIDTH, HEIGHT - y + startY - r + SHIPSIZE + 5);
+	ctx.fill();
+	ctx.restore();
+	if (type === 1 && time !== -1) {
 		for (i = 0; i < 5; i++) {
-			drawCircle(
+			drawCloud(
 				x + r * Math.cos(time / 1500 + i * 17 + x),
 				HEIGHT - y + startY + r * Math.sin(time / 1500 + i * 17 + x),
-				SHIPSIZE + 10, 'rgba(256,128,0,0.95)'
-			); //TODO proper clouds
+				SHIPSIZE + 10,
+				time + 14252.2 * i
+			);
 		}
+	}
+	if ((type === 3 || type === 4) && currentPlanet && dt <= 1000) {
+		ctx.fillStyle = type === 3 ? 'hsla(45,85%,40%,' + (1 - dt / 1000) + ')' : 'rgba(136,136,136,' + (1 - dt / 1000) + ')';
+		ctx.fillText(type === 3 ? '+10' : '+5', x, HEIGHT - y + startY - r);
 	}
 }
 
@@ -301,7 +356,10 @@ function drawPlanets (time) {
 			break;
 		}
 		if (y + r > startY) {
-			drawPlanet(x, y, r, planets[i].t, time, i === playerPlanet);
+			if (i === lastPlanet && !planets[i].start) {
+				planets[i].start = time;
+			}
+			drawPlanet(x, y, r, planets[i].t, time, i === lastPlanet, time - planets[i].start);
 		}
 	}
 }
@@ -314,10 +372,28 @@ function drawSpaceship () {
 	ctx.restore();
 }
 
+function drawWormhole () {
+	var p = Math.min(playerX, WIDTH - playerX, playerY - startY, startY + HEIGHT - playerY) / SHIPSIZE;
+	drawCircle(
+		playerX, HEIGHT - playerY + startY,
+		Math.min(8 * SHIPSIZE / p, HEIGHT),
+		'rgba(127,0,127,' + Math.max(Math.pow(0.5, p), 0.1) + ')'
+	);
+}
+
 function draw (time) {
 	drawBackground();
 	drawSpaceship();
 	drawPlanets(time);
+	if (
+		playerPlanet === -1 &&
+		planets[lastPlanet].t === 6 &&
+		!planets[lastPlanet].saved &&
+		!willHitPlanet()
+	) {
+		drawWormhole();
+	}
+	//fade out left and right
 	ctx.fillStyle = gradientLeft;
 	ctx.fillRect(0, 0, 2 * SHIPSIZE, HEIGHT);
 	ctx.fillStyle = gradientRight;
@@ -329,13 +405,19 @@ function drawExamplePlanet (canvas, type) {
 	canvas.width = 60;
 	canvas.height = 60;
 	ctx = canvas.getContext('2d');
-	drawPlanet(30, HEIGHT - 30, 25 + SHIPSIZE, type, 0);
+	drawPlanet(30, HEIGHT - 30, 25 + SHIPSIZE, type, -1);
 	ctx = backupCtx;
 }
 
 function resize () {
 	var docEl = document.documentElement, width;
-	width = Math.floor(Math.min(1, docEl.clientWidth / WIDTH, docEl.clientHeight / HEIGHT) * WIDTH) + 'px'; //TODO 2?
+	width = Math.floor(
+		Math.min(
+			fullscreen.is() ? 2 : 1,
+			docEl.clientWidth / WIDTH,
+			docEl.clientHeight / HEIGHT
+		) * WIDTH
+	) + 'px';
 	canvas.style.width = width;
 	header.style.width = width;
 }
@@ -351,6 +433,9 @@ gradientLeft.addColorStop(1, 'rgba(0,0,0,0)');
 gradientRight = ctx.createLinearGradient(WIDTH, 0, WIDTH - 2 * SHIPSIZE, 0);
 gradientRight.addColorStop(0, 'black');
 gradientRight.addColorStop(1, 'rgba(0,0,0,0)');
+
+ctx.textAlign = 'center';
+ctx.font = '40px sans-serif';
 
 initSpaceship0(document.getElementById('spaceship0'), 20, Math.PI / 4);
 initSpaceship1(document.getElementById('spaceship1'), 20, Math.PI / 4);

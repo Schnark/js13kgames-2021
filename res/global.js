@@ -1,5 +1,5 @@
 /*jshint unused: false*/
-var WIDTH = 420, HEIGHT = 600,
+var WIDTH = 420, HEIGHT = 700,
 	SHIPSIZE = 10, PLANET_R = 40,
 	circleSpeed = 0.0015, moveSpeed = 0.1,
 	planets, playerX, playerY,

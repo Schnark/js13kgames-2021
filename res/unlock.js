@@ -27,6 +27,13 @@ function unlock () {
 			unlocked = true;
 		}
 	}
+	if (gold >= 5000) {
+		button = document.getElementById('button4');
+		if (button.disabled) {
+			button.disabled = false;
+			unlocked = true;
+		}
+	}
 	return unlocked;
 }
 

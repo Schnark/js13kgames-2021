@@ -8,6 +8,8 @@ update =
 (function () {
 "use strict";
 
+var addedExtraGold;
+
 function init () {
 	planets = [{
 		x: 210, //WIDTH / 2
@@ -27,6 +29,8 @@ function init () {
 	circleDir = -1;
 	lastPlanet = 0;
 	startY = 0;
+
+	addedExtraGold = false;
 
 	addPlanets();
 }
@@ -49,12 +53,18 @@ function getRandomType (probs) {
 }
 
 function addPlanet () {
-	var last = planets[planets.length - 1];
+	var last = planets[planets.length - 1],
+		type = getRandomType([0.33, 0.2, 0.15, 0.01, 0.05, 0.16, 0.1]);
+	if (type === 0 && !addedExtraGold && planets.length > 5 && gold < 10) {
+		type = Math.random() < 0.1 ? 3 : 4;
+		addedExtraGold = true;
+	}
 	planets.push({
 		x: 2 * SHIPSIZE + PLANET_R + Math.round((WIDTH - 4 * SHIPSIZE - 2 * PLANET_R) * Math.random()),
-		y: last.y + 2 * SHIPSIZE + 2 * PLANET_R + Math.round(HEIGHT / 4 * Math.random()),
+		y: last.y + 2 * SHIPSIZE + 2 * PLANET_R +
+			Math.round(HEIGHT / 4 * Math.random() * (1 + Math.atan(Math.log(planets.length / 20)) / Math.PI)),
 		r: Math.max(Math.min(last.r, PLANET_R - Math.round(planets.length * Math.random() / 5)), 5),
-		t: getRandomType([0.0, 0.25, 0.2, 0.05, 0.1, 0.1, 0.3])
+		t: type
 	});
 }
 
@@ -68,7 +78,7 @@ function update (dt) {
 			startY += dy / 3;
 		}
 		if (playerX < 0 || playerX > WIDTH || playerY < startY || playerY > startY + HEIGHT) {
-			if (planets[lastPlanet].t === 6 && !planets[lastPlanet].saved) { //TODO there should be some animation
+			if (planets[lastPlanet].t === 6 && !planets[lastPlanet].saved) {
 				planets[lastPlanet].saved = true;
 				playerPlanet = lastPlanet;
 				angle = playerAngle - 0.5 * circleDir * Math.PI;
@@ -80,7 +90,10 @@ function update (dt) {
 		}
 		for (i = lastPlanet + 1; i < planets.length; i++) {
 			dy = playerY - planets[i].y;
-			if (dy < -planets[i].r) {
+			if (
+				dy < -planets[i].r || //too far away
+				(planets[i].y - planets[i].r + (planets[i].t === 1 ? 0 : 5 + SHIPSIZE) - startY >= HEIGHT) //not yet visible
+			) {
 				break;
 			}
 			dx = playerX - planets[i].x;
@@ -102,7 +115,7 @@ function update (dt) {
 	} else {
 		if (planets[playerPlanet].t === 2) {
 			factor = planets[playerPlanet].factor || 1;
-			planets[playerPlanet].factor = factor + dt / 1500;
+			planets[playerPlanet].factor = factor + dt / 2000;
 		} else {
 			factor = 1;
 		}

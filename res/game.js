@@ -1,13 +1,20 @@
-/*global storage, play*/
+/*global storage, fullscreen, play*/
 (function () {
 "use strict";
 
-var fullscreen, sound;
+var fullscreenToggle, soundToggle, wasFullscreen, isMenu = true;
 
 function start (type) {
 	document.getElementById('menu').hidden = true;
 	document.getElementById('game').hidden = false;
 	document.getElementById('overlay').hidden = true;
+	isMenu = false;
+	if (type !== -1) {
+		wasFullscreen = fullscreen.is();
+	}
+	if (fullscreenToggle.checked) {
+		fullscreen.enter();
+	}
 	play(type);
 }
 
@@ -40,31 +47,46 @@ document.getElementById('button-retry').addEventListener('click', function () {
 document.getElementById('button-menu').addEventListener('click', function () {
 	document.getElementById('menu').hidden = false;
 	document.getElementById('game').hidden = true;
+	isMenu = true;
+	if (!wasFullscreen) {
+		fullscreen.exit();
+	}
 });
 
-fullscreen = document.getElementById('fullscreen');
-sound = document.getElementById('sound');
+fullscreenToggle = document.getElementById('fullscreen');
+soundToggle = document.getElementById('sound');
 
-fullscreen.checked = storage.get('fullscreen');
-fullscreen.parentElement.addEventListener('mousedown', function (e) {
+fullscreenToggle.checked = storage.get('fullscreen');
+fullscreenToggle.parentElement.addEventListener('mousedown', function (e) {
 	e.stopPropagation();
 });
-fullscreen.parentElement.addEventListener('touchstart', function (e) {
+fullscreenToggle.parentElement.addEventListener('touchstart', function (e) {
 	e.stopPropagation();
 });
-fullscreen.addEventListener('change', function () {
-	storage.set('fullscreen', fullscreen.checked);
+fullscreenToggle.addEventListener('change', function () {
+	storage.set('fullscreen', fullscreenToggle.checked);
+	if (fullscreenToggle.checked) {
+		fullscreen.enter();
+	} else {
+		fullscreen.exit();
+	}
+});
+fullscreen.setUpdateHandler(function (isFullscreen) {
+	if (!isMenu) {
+		fullscreenToggle.checked = isFullscreen;
+		storage.set('fullscreen', isFullscreen);
+	}
 });
 
-sound.checked = storage.get('sound');
-sound.parentElement.addEventListener('mousedown', function (e) {
+soundToggle.checked = storage.get('sound');
+soundToggle.parentElement.addEventListener('mousedown', function (e) {
 	e.stopPropagation();
 });
-sound.parentElement.addEventListener('touchstart', function (e) {
+soundToggle.parentElement.addEventListener('touchstart', function (e) {
 	e.stopPropagation();
 });
-sound.addEventListener('change', function () {
-	storage.set('sound', sound.checked);
+soundToggle.addEventListener('change', function () {
+	storage.set('sound', soundToggle.checked);
 });
 
 })();

@@ -30,11 +30,13 @@ function play (type) {
 		document.getElementById('gold').textContent = gold;
 		unlocked = unlock();
 		document.getElementById('result').innerHTML =
-			'You are lost in space. ' +
-			'The farthest planet you reached was ' + displayY + ' away.' +
-			(newRecord ? '<br>That’s a new record!' : '') +
-			'<br>You currently have ' + gold + ' coins.' +
-			(unlocked ? '<br>You just unlocked a new spaceship!' : '');
+			(displayY === '0ly' ?
+				'You didn’t reach another planet.' :
+				'The farthest planet you reached was <b>' + displayY + '</b> away.'
+			) +
+			(newRecord ? '<br>That’s a <b>new record</b>!' : '') +
+			'<br>You currently have <b>' + gold + ' coins</b>.' +
+			(unlocked ? '<br>You just unlocked a <b>new spacecraft</b>!' : '');
 		document.getElementById('overlay').hidden = false;
 	}
 
