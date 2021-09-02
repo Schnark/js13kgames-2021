@@ -45,6 +45,8 @@ button {
 	background: #eee;
 	padding: 5px;
 	height: 120px;
+	vertical-align: top;
+	margin-top: 10px;
 }
 
 button:disabled {
@@ -93,7 +95,7 @@ button:focus canvas {
 
 .large-q {
 	font-weight: bold;
-	font-size: 57px;
+	font-size: 50px;
 }
 
 input[type="checkbox"],

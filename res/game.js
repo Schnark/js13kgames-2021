@@ -1,4 +1,4 @@
-/*global storage, fullscreen, play*/
+/*global storage, fullscreen, music, play*/
 (function () {
 "use strict";
 
@@ -86,7 +86,16 @@ soundToggle.parentElement.addEventListener('touchstart', function (e) {
 	e.stopPropagation();
 });
 soundToggle.addEventListener('change', function () {
+	if (!soundToggle.checked) {
+		music.stop();
+	}
 	storage.set('sound', soundToggle.checked);
 });
+
+music.play = function () {
+	if (soundToggle.checked) {
+		music.tick();
+	}
+};
 
 })();

@@ -1,6 +1,7 @@
 /*global play: true*/
-/*global storage, draw, update, unlock*/
+/*global storage, music, draw, update, unlock*/
 /*global playerPlanet: true, record: true, gold: true*/
+/*global Event*/
 play =
 (function () {
 "use strict";
@@ -14,6 +15,7 @@ function play (type) {
 	var time;
 	function showResult (rawY, displayY) {
 		var newRecord = false, unlocked = false;
+		music.stop();
 		playing = false;
 		if (rawY > record && displayY !== '0ly') {
 			storage.set(recordName, [rawY, displayY]);
@@ -55,6 +57,7 @@ function play (type) {
 		}
 		time = t;
 		if (!end) {
+			music.play();
 			rAF(loop);
 		} else {
 			showResult(end[0], end[1]);
@@ -86,12 +89,22 @@ window.addEventListener('touchstart', function () {
 });
 
 window.addEventListener('keydown', function (e) {
+	var toggle;
 	if (!playing) {
 		return;
 	}
 	if (e.key === ' ' || e.key === 'Spacebar' || e.keyCode === 32) {
 		playerPlanet = -1;
 		e.preventDefault();
+	} else if (e.key === 'f' || e.keyCode === 70) {
+		toggle = document.getElementById('fullscreen');
+	} else if (e.key === 'm' || e.keyCode === 77) {
+		toggle = document.getElementById('sound');
+	}
+	if (toggle) {
+		e.preventDefault();
+		toggle.checked = !toggle.checked;
+		toggle.dispatchEvent(new Event('change'));
 	}
 });
 

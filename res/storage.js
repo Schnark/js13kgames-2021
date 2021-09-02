@@ -4,11 +4,6 @@ storage =
 (function () {
 "use strict";
 
-//FIXME exchange sessionStorage for localStorage once things are ready for this
-if (false) {//to make sure the linter complains about the above FIXME
-	alert();
-}
-
 var data = {
 	record0: [-1, '—'],
 	record1: [-1, '—'],
@@ -21,7 +16,7 @@ var data = {
 }, storageKey = 'schnark-js13k-2021';
 
 try {
-	data = JSON.parse(sessionStorage.getItem(storageKey) || 'x');
+	data = JSON.parse(localStorage.getItem(storageKey) || 'x');
 } catch (e) {
 }
 
@@ -32,7 +27,7 @@ function get (key) {
 function set (key, value) {
 	data[key] = value;
 	try {
-		sessionStorage.setItem(storageKey, JSON.stringify(data));
+		localStorage.setItem(storageKey, JSON.stringify(data));
 	} catch (e) {
 	}
 }

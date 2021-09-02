@@ -9,6 +9,8 @@
 <script src="res/global.js" defer></script>
 <script src="res/storage.js" defer></script>
 <script src="res/fullscreen.js" defer></script>
+<script src="res/music.js" defer></script>
+<script src="res/melody.js" defer></script>
 <script src="res/draw.js" defer></script>
 <script src="res/update.js" defer></script>
 <script src="res/play.js" defer></script><!--play inits gold-->
@@ -56,14 +58,14 @@ delete line-->
 <tr><td><canvas id="planet2" width="60" height="60"></canvas></td><td><b>Red planets</b> are dangerous! Leave them as soon as possible after arrival.</td></tr>
 <tr><td><canvas id="planet5" width="60" height="60"></canvas></td><td><b>Green planets</b> will brighten up when it is a good time to leave.</td></tr>
 <tr><td><canvas id="planet6" width="60" height="60"></canvas></td><td>If you get lost in space after leaving a <b>violet planet</b>, a wormhole will appear and save you once.</td></tr>
-<tr><td><canvas id="planet4" width="60" height="60"></canvas></td><td>If you reach a <b>silver planet</b> you get 5 coins.</td></tr>
-<tr><td><canvas id="planet3" width="60" height="60"></canvas></td><td>If you reach a <b>golden planet</b> you get 10 coins.</td></tr>
+<tr><td><canvas id="planet4" width="60" height="60"></canvas></td><td>When you reach a <b>silver planet</b> you get 5 coins.</td></tr>
+<tr><td><canvas id="planet3" width="60" height="60"></canvas></td><td>When you reach a <b>golden planet</b> you get 10 coins.</td></tr>
 </table>
 </section>
 <section id="game" hidden>
 <header id="header">
-<label><input type="checkbox" id="fullscreen"><span class="on"><svg title="Exit fullscreen" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M22,3.41l-5.29,5.29L20,12h-8V4l3.29,3.29L20.59,2L22,3.41z M3.41,22l5.29-5.29L12,20v-8H4l3.29,3.29L2,20.59L3.41,22z"/></svg></span><span class="off"><svg title="Enter fullscreen" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><polygon points="21,11 21,3 13,3 16.29,6.29 6.29,16.29 3,13 3,21 11,21 7.71,17.71 17.71,7.71"/></svg></span></label>
-<label><input type="checkbox" id="sound"><span class="on"><svg title="Mute music" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M15 8v8.55c-.94-.54-2.1-.75-3.33-.32-1.34.48-2.37 1.67-2.61 3.07a4.007 4.007 0 0 0 4.59 4.65c1.96-.31 3.35-2.11 3.35-4.1V10h2c1.1 0 2-.9 2-2s-.9-2-2-2h-2c-1.1 0-2 .9-2 2z"/></svg></span><span class="off"><svg title="Unmute music" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M17 12.61V10h2c1.1 0 2-.9 2-2s-.9-2-2-2h-2c-1.1 0-2 .9-2 2v3.61l2 2zM8.12 6.56a.996.996 0 1 0-1.41 1.41l8.29 8.3v.28c-.94-.54-2.1-.75-3.33-.32-1.34.48-2.37 1.67-2.61 3.07a4.007 4.007 0 0 0 4.59 4.65c1.96-.31 3.35-2.11 3.35-4.1v-1.58l5.02 5.02a.996.996 0 1 0 1.41-1.41L8.12 6.56z"/></svg></span></label>
+<label><input type="checkbox" id="fullscreen"><span class="on"><svg title="Exit fullscreen [f]" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M22,3.41l-5.29,5.29L20,12h-8V4l3.29,3.29L20.59,2L22,3.41z M3.41,22l5.29-5.29L12,20v-8H4l3.29,3.29L2,20.59L3.41,22z"/></svg></span><span class="off"><svg title="Enter fullscreen [f]" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><polygon points="21,11 21,3 13,3 16.29,6.29 6.29,16.29 3,13 3,21 11,21 7.71,17.71 17.71,7.71"/></svg></span></label>
+<label><input type="checkbox" id="sound"><span class="on"><svg title="Mute music [m]" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M15 8v8.55c-.94-.54-2.1-.75-3.33-.32-1.34.48-2.37 1.67-2.61 3.07a4.007 4.007 0 0 0 4.59 4.65c1.96-.31 3.35-2.11 3.35-4.1V10h2c1.1 0 2-.9 2-2s-.9-2-2-2h-2c-1.1 0-2 .9-2 2z"/></svg></span><span class="off"><svg title="Unmute music [m]" height="24px" viewBox="0 0 24 24" width="24px" fill="#fff"><path d="M17 12.61V10h2c1.1 0 2-.9 2-2s-.9-2-2-2h-2c-1.1 0-2 .9-2 2v3.61l2 2zM8.12 6.56a.996.996 0 1 0-1.41 1.41l8.29 8.3v.28c-.94-.54-2.1-.75-3.33-.32-1.34.48-2.37 1.67-2.61 3.07a4.007 4.007 0 0 0 4.59 4.65c1.96-.31 3.35-2.11 3.35-4.1v-1.58l5.02 5.02a.996.996 0 1 0 1.41-1.41L8.12 6.56z"/></svg></span></label>
 </header>
 <canvas id="canvas"></canvas>
 <div id="overlay" hidden>
