@@ -67,6 +67,8 @@ function play (type) {
 	if (type !== -1) {
 		recordName = 'record' + type;
 		record = storage.get(recordName)[0];
+
+		music.setMelody(type);
 	}
 	update.init();
 	draw.init(type);

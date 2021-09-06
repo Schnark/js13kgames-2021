@@ -255,13 +255,8 @@ function willHitPlanet () {
 	return false;
 }
 
-function drawCloud (x, y, r, t) {
+function cloudPath (x, y, r, t) {
 	var i, n = 7;
-	ctx.fillStyle = 'hsla(' +
-		(25 + 1.5 * Math.sin(t / 5100)) + ',' +
-		(90 + Math.sin(t / 520)) + '%,' +
-		(50 + 3 * Math.sin(t / 490)) + '%,' +
-		(0.98 + Math.sin(t / 480) / 100) + ')';
 	ctx.beginPath();
 	ctx.arc(x, y, r - 3, 0, 2 * Math.PI);
 	for (i = 0; i < n; i++) {
@@ -272,6 +267,20 @@ function drawCloud (x, y, r, t) {
 			0, 2 * Math.PI
 		);
 	}
+}
+
+function drawCloud (x, y, r, t) {
+	ctx.fillStyle = 'hsla(' +
+		(25 + 1.5 * Math.sin(t / 5100)) + ',' +
+		(90 + Math.sin(t / 520)) + '%,' +
+		(50 + 3 * Math.sin(t / 490)) + '%,' +
+		(0.98 + Math.sin(t / 480) / 100) + ')';
+	cloudPath(x, y, r, t);
+	ctx.fill();
+	ctx.fillStyle = 'rgba(255,255,255,0.05)';
+	cloudPath(x, y, r * 0.7, t);
+	ctx.fill();
+	cloudPath(x, y, r * 0.4, t);
 	ctx.fill();
 }
 

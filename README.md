@@ -1,3 +1,6 @@
-This repository will hosts my submission for https://js13kgames.com/.
+This repository hosts my submission for https://js13kgames.com/.
 
-Currently work in progress, but playable at https://schnark.github.io/js13kgames-2021/
+There are several versions of the game:
+* Official version: NOT YET AVAILABLE
+* Development version: https://schnark.github.io/js13kgames-2021/
+* Minified version: https://schnark.github.io/js13kgames-2021/min/
